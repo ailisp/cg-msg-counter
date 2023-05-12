@@ -1,0 +1,18 @@
+org: boatnear
+app: cg-msg-counter
+service: cg-msg-counter-serverless
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  api:
+    handler: index.handler
+    events:
+      - httpApi: '*'
+    environment:
+      TG_API_ID: ${param:tg-api-id}
+      TG_API_HASH: ${param:tg-api-hash}
+      TG_STRING_SESSION: ${param:tg-string-session}
