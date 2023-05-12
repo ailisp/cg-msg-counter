@@ -18,10 +18,10 @@ app.get("/groups/:group", async (req, res, next) => {
   await client.start({
     onError: (err) => console.log(err),
   });
-  let messages = await client.getMessages(req.params.group, {limit: 1})
+  let messages = await client.getMessages(req.params.group, {limit: 10})
 
   return res.status(200).json({
-    count: messages[0].id
+    messageIds: messages.map(m => m.id)
   });
 });
 
