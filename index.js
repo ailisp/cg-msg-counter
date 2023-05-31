@@ -100,6 +100,11 @@ app.get('/groups-ui/:group', async (req, res) => {
         <link href="https://telegram.org/css/widget-frame.css?66" rel="stylesheet" media="screen">
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.3.6/iframeResizer.contentWindow.js"></script>
         <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+        <style>
+          :root {
+            color-scheme: light !important;
+          }
+        </style>
         </head>
         <body>
           <div style="display:flex;flex-wrap:wrap;justify-content:left;font-family:'Roboto'">${combinedContent}</div>
