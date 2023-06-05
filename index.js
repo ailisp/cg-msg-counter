@@ -56,6 +56,7 @@ app.get('/groups-ui/:group', async (req, res) => {
   let messageIds = messages.map(m => m.id).reverse();
   const urls = messageIds.map(id => `https://t.me/${group}/${id}?embed=1`);
   const divContents = new Array(messageIds.length);
+  let groupName;
 
   const downloadPromises = urls.map((url, i) => {
     return new Promise((resolve, reject) => {
@@ -72,6 +73,18 @@ app.get('/groups-ui/:group', async (req, res) => {
         response.on('end', () => {
           // Load the HTML using cheerio
           const $ = cheerio.load(body);
+
+          // Find all div elements with class "tgme_widget_message_author"
+          const divsWithClass = $('div.tgme_widget_message_author');
+
+          // Remove all but the first child div
+          divsWithClass.each((index, element) => {
+            const firstChild = $(element).children().first();
+            if (!groupName) {
+              groupName = $(element).children().last();
+            }
+            $(element).empty().append(firstChild);
+          });
 
           // Extract the <body> content
           const bodyContent = $('body').html();
@@ -92,9 +105,10 @@ app.get('/groups-ui/:group', async (req, res) => {
   Promise.all(downloadPromises)
     .then(() => {
       // Combine the <div> contents into a single HTML string
-      const combinedContent = divContents.join('');
+      const combinedContent = '<div class="tgme_widget_message_author accent_color">'+groupName+'</div>'+divContents.join('');
 
       const html = `
+      <!DOCTYPE html>
       <html>
         <head>
         <link href="https://telegram.org/css/widget-frame.css?66" rel="stylesheet" media="screen">
@@ -103,6 +117,11 @@ app.get('/groups-ui/:group', async (req, res) => {
         <style>
           :root {
             color-scheme: light !important;
+          }
+          a.tgme_widget_message_owner_name, a.tgme_widget_message_owner_name:hover, a.tgme_widget_message_owner_name:visited {
+            color: var(--accent-color); 
+            text-decoration: none;
+            margin-bottom: 10px;
           }
         </style>
         </head>
