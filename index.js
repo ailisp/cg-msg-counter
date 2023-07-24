@@ -53,7 +53,7 @@ app.get('/groups-ui/:group', async (req, res) => {
 
   let messages = await client.getMessages(group, { limit: 10 })
 
-  let messageIds = messages.map(m => m.id).reverse();
+  let messageIds = messages.map(m => m.id);
   const urls = messageIds.map(id => `https://t.me/${group}/${id}?embed=1`);
   const divContents = new Array(messageIds.length);
   let groupName;
@@ -105,7 +105,7 @@ app.get('/groups-ui/:group', async (req, res) => {
   Promise.all(downloadPromises)
     .then(() => {
       // Combine the <div> contents into a single HTML string
-      const combinedContent = '<div class="tgme_widget_message_author accent_color">'+groupName+'</div>'+divContents.join('');
+      const combinedContent = '<div class="tgme_widget_message_author" style="color: black">Recent Posts in&nbsp;'+groupName+'</div>'+divContents.join('');
 
       const html = `
       <!DOCTYPE html>
